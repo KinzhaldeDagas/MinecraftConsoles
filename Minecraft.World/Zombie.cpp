@@ -256,6 +256,12 @@ MobType Zombie::getMobType()
 	return UNDEAD;
 }
 
+
+bool Zombie::canSpawn()
+{
+	return level->difficulty > Difficulty::PEACEFUL && PathfinderMob::canSpawn();
+}
+
 void Zombie::dropRareDeathLoot(int rareLootLevel)
 {
 	switch (random->nextInt(3))

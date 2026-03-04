@@ -110,6 +110,12 @@ MobType Skeleton::getMobType()
 	return UNDEAD;
 }
 
+
+bool Skeleton::canSpawn()
+{
+	return level->difficulty > Difficulty::PEACEFUL && PathfinderMob::canSpawn();
+}
+
 void Skeleton::aiStep()
 {
 	if (level->isDay() && !level->isClientSide)

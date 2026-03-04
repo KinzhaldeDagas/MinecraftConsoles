@@ -253,7 +253,15 @@ void Player::updateFrameTick()
 			{
 				spawnEatParticles(item, 5);
 			}
-			if (--useItemDuration == 0)
+			if (useItem != NULL && useItem->getItem() != NULL && useItem->id == Item::bow_Id)
+			{
+				if (!level->isClientSide)
+				{
+					useItem->releaseUsing(level, dynamic_pointer_cast<Player>(shared_from_this()), useItemDuration);
+				}
+				useItemDuration = useItem->getUseDuration();
+			}
+			else if (--useItemDuration == 0)
 			{
 				if (!level->isClientSide)
 				{
