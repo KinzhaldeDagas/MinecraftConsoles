@@ -22,10 +22,12 @@ HRESULT CScene_SettingsGraphics::OnInit( XUIMessageInit* pInitData, BOOL& bHandl
 	m_Clouds.SetCheck( (app.GetGameSettings(m_iPad,eGameSetting_Clouds)!=0)?TRUE:FALSE);
 	m_Clouds.SetText(app.GetString( IDS_CHECKBOX_RENDER_CLOUDS ));
 
+	m_SliderA[SLIDER_SETTINGS_GAMMA].SetRange(0,200);
 	m_SliderA[SLIDER_SETTINGS_GAMMA].SetValue(app.GetGameSettings(m_iPad,eGameSetting_Gamma));
 	swprintf( (WCHAR *)TempString, 256, L"%ls: %d%%", app.GetString( IDS_SLIDER_GAMMA ),app.GetGameSettings(m_iPad,eGameSetting_Gamma));	
 	m_SliderA[SLIDER_SETTINGS_GAMMA].SetText(TempString);
 
+	m_SliderA[SLIDER_SETTINGS_INTERFACE_OPACITY].SetRange(0,200);
 	m_SliderA[SLIDER_SETTINGS_INTERFACE_OPACITY].SetValue(app.GetGameSettings(m_iPad,eGameSetting_InterfaceOpacity));
 	swprintf( (WCHAR *)TempString, 256, L"%ls: %d%%", app.GetString( IDS_SLIDER_INTERFACEOPACITY ),app.GetGameSettings(m_iPad,eGameSetting_InterfaceOpacity));	
 	m_SliderA[SLIDER_SETTINGS_INTERFACE_OPACITY].SetText(TempString);
@@ -244,10 +246,10 @@ HRESULT CScene_SettingsGraphics::OnTransitionStart( XUIMessageTransition *pTrans
 			switch(i)
 			{
 			case SLIDER_SETTINGS_GAMMA: // 3 digits
-				swprintf( (WCHAR *)TempString, 256, L"%ls: %d%%", app.GetString( IDS_SLIDER_GAMMA ),999);	
+				swprintf( (WCHAR *)TempString, 256, L"%ls: %d%%", app.GetString( IDS_SLIDER_GAMMA ),200);	
 				break;
 			case SLIDER_SETTINGS_INTERFACE_OPACITY: // 3 digits
-				swprintf( (WCHAR *)TempString, 256, L"%ls: %d%%", app.GetString( IDS_SLIDER_INTERFACEOPACITY ),999);	
+				swprintf( (WCHAR *)TempString, 256, L"%ls: %d%%", app.GetString( IDS_SLIDER_INTERFACEOPACITY ),200);	
 				break;
 			}
 			hr=XuiTextPresenterMeasureText(hText, TempString, &xuiRect);
