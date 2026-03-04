@@ -149,13 +149,13 @@ void PlayerList::placeNewPlayer(Connection *connection, shared_ptr<ServerPlayer>
 #endif
 		// 4J Added - Give every player a map the first time they join a server
 		player->inventory->setItem( 9, shared_ptr<ItemInstance>( new ItemInstance(Item::map_Id, 1, level->getAuxValueForMap(player->getXuid(),0,centreXC, centreZC, mapScale ) ) ) );
-		shared_ptr<ItemInstance> starterBow(new ItemInstance(Item::bow_Id, 1));
+		shared_ptr<ItemInstance> starterBow(new ItemInstance(Item::bow, 1));
 		starterBow->enchant(Enchantment::arrowInfinite, 1);
-		starterBow->enchant(Enchantment::arrowDamage, 5);
+		starterBow->enchant(Enchantment::arrowBonus, 5);
 		starterBow->enchant(Enchantment::arrowKnockback, 2);
 		starterBow->enchant(Enchantment::arrowFire, 1);
 		player->inventory->setItem(0, starterBow);
-		player->inventory->setItem(1, shared_ptr<ItemInstance>(new ItemInstance(Item::arrow_Id, 1)));
+		player->inventory->setItem(1, shared_ptr<ItemInstance>(new ItemInstance(Item::arrow, 1)));
 		if(app.getGameRuleDefinitions() != NULL)
 		{
 			app.getGameRuleDefinitions()->postProcessPlayer(player);
