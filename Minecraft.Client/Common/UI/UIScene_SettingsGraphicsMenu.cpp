@@ -17,10 +17,10 @@ UIScene_SettingsGraphicsMenu::UIScene_SettingsGraphicsMenu(int iPad, void *initD
 	WCHAR TempString[256];
 	
 	swprintf( (WCHAR *)TempString, 256, L"%ls: %d%%", app.GetString( IDS_SLIDER_GAMMA ),app.GetGameSettings(m_iPad,eGameSetting_Gamma));	
-	m_sliderGamma.init(TempString,eControl_Gamma,0,100,app.GetGameSettings(m_iPad,eGameSetting_Gamma));
+	m_sliderGamma.init(TempString,eControl_Gamma,0,200,app.GetGameSettings(m_iPad,eGameSetting_Gamma));
 	
 	swprintf( (WCHAR *)TempString, 256, L"%ls: %d%%", app.GetString( IDS_SLIDER_INTERFACEOPACITY ),app.GetGameSettings(m_iPad,eGameSetting_InterfaceOpacity));	
-	m_sliderInterfaceOpacity.init(TempString,eControl_InterfaceOpacity,0,100,app.GetGameSettings(m_iPad,eGameSetting_InterfaceOpacity));
+	m_sliderInterfaceOpacity.init(TempString,eControl_InterfaceOpacity,0,200,app.GetGameSettings(m_iPad,eGameSetting_InterfaceOpacity));
 
 	doHorizontalResizeCheck();
 	
