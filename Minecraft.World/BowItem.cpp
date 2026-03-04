@@ -79,7 +79,7 @@ UseAnim BowItem::getUseAnimation(shared_ptr<ItemInstance> itemInstance)
 
 shared_ptr<ItemInstance> BowItem::use(shared_ptr<ItemInstance> instance, Level *level, shared_ptr<Player> player)
 {
-	if (player->abilities.instabuild || player->inventory->hasResource(Item::arrow_Id))
+	if (player->abilities.instabuild || EnchantmentHelper::getEnchantmentLevel(Enchantment::arrowInfinite->id, instance) > 0 || player->inventory->hasResource(Item::arrow_Id))
 	{
 		player->startUsingItem(instance, getUseDuration(instance));
 	}

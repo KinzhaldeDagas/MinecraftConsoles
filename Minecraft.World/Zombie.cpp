@@ -56,7 +56,7 @@ void Zombie::registerAttributes()
 	Monster::registerAttributes();
 
 	// 4J Stu - Don't make it so far!
-	//getAttribute(SharedMonsterAttributes::FOLLOW_RANGE)->setBaseValue(40);
+	getAttribute(SharedMonsterAttributes::FOLLOW_RANGE)->setBaseValue(64);
 
 	getAttribute(SharedMonsterAttributes::MOVEMENT_SPEED)->setBaseValue(0.23f);
 	getAttribute(SharedMonsterAttributes::ATTACK_DAMAGE)->setBaseValue(3);
@@ -254,6 +254,12 @@ void Zombie::playStepSound(int xt, int yt, int zt, int t)
 MobType Zombie::getMobType()
 {
 	return UNDEAD;
+}
+
+
+bool Zombie::canSpawn()
+{
+	return level->difficulty > Difficulty::PEACEFUL && PathfinderMob::canSpawn();
 }
 
 void Zombie::dropRareDeathLoot(int rareLootLevel)

@@ -70,6 +70,7 @@ protected:
 
 public:
 	virtual MobType getMobType();
+	virtual bool canSpawn();
 
 protected:
 	virtual void dropRareDeathLoot(int rareLootLevel);
