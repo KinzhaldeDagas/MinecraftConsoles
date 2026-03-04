@@ -46,6 +46,7 @@ public:
 
 public:
 	virtual MobType getMobType();
+	virtual bool canSpawn();
 	virtual void aiStep();
 	virtual void rideTick();
 	virtual void die(DamageSource *source);

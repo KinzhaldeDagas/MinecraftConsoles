@@ -117,8 +117,8 @@ Biome::Biome(int id) : id(id)
 	friendlies.push_back(new MobSpawnerData(eTYPE_COW, 8, 4, 4));
 
 	enemies.push_back(new MobSpawnerData(eTYPE_SPIDER, 10, 4, 4));
-	enemies.push_back(new MobSpawnerData(eTYPE_ZOMBIE, 10, 4, 4));
-	enemies.push_back(new MobSpawnerData(eTYPE_SKELETON, 10, 4, 4));
+	enemies.push_back(new MobSpawnerData(eTYPE_ZOMBIE, 40, 6, 12));
+	enemies.push_back(new MobSpawnerData(eTYPE_SKELETON, 40, 6, 12));
 	enemies.push_back(new MobSpawnerData(eTYPE_CREEPER, 10, 4, 4));
 	enemies.push_back(new MobSpawnerData(eTYPE_SLIME, 10, 4, 4));
 	enemies.push_back(new MobSpawnerData(eTYPE_ENDERMAN, 1, 1, 4));

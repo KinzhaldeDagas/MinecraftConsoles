@@ -30,7 +30,7 @@ Skeleton::Skeleton(Level *level) : Monster( level )
 	registerAttributes();
 	setHealth(getMaxHealth());
 
-	bowGoal = new RangedAttackGoal(this, this, 1.0, SharedConstants::TICKS_PER_SECOND * 1, SharedConstants::TICKS_PER_SECOND * 3, 15);
+	bowGoal = new RangedAttackGoal(this, this, 1.0, 2, 6, 24);
 	meleeGoal = new MeleeAttackGoal(this, eTYPE_PLAYER, 1.2, false);
 
 	goalSelector.addGoal(1, new FloatGoal(this));
@@ -56,6 +56,7 @@ void Skeleton::registerAttributes()
 {
 	Monster::registerAttributes();
 
+	getAttribute(SharedMonsterAttributes::FOLLOW_RANGE)->setBaseValue(64);
 	getAttribute(SharedMonsterAttributes::MOVEMENT_SPEED)->setBaseValue(0.25f);
 }
 
@@ -107,6 +108,12 @@ bool Skeleton::doHurtTarget(shared_ptr<Entity> target)
 MobType Skeleton::getMobType() 
 {
 	return UNDEAD;
+}
+
+
+bool Skeleton::canSpawn()
+{
+	return level->difficulty > Difficulty::PEACEFUL && PathfinderMob::canSpawn();
 }
 
 void Skeleton::aiStep()

@@ -19,6 +19,7 @@
 #include "Dimension.h"
 
 const int MobSpawner::MIN_SPAWN_DISTANCE = 24;
+static const int CONSOLE_SPAWN_ATTEMPTS_MULTIPLIER = 4;
 
 TilePos MobSpawner::getRandomPosWithin(Level *level, int cx, int cz)
 {
@@ -247,7 +248,7 @@ const int MobSpawner::tick(ServerLevel *level, bool spawnEnemies, bool spawnFrie
 			   if (level->getMaterial(xStart, yStart, zStart) != mobCategory->getSpawnPositionMaterial()) continue;
 			   int clusterSize = 0;
 
-			   for (int dd = 0; dd < 3; dd++)
+			   for (int dd = 0; dd < (3 * CONSOLE_SPAWN_ATTEMPTS_MULTIPLIER); dd++)
 			   {
 				   int x = xStart;
 				   int y = yStart;
