@@ -18,8 +18,8 @@
 #include "MobSpawner.h"
 #include "Dimension.h"
 
-const int MobSpawner::MIN_SPAWN_DISTANCE = 24;
-static const int CONSOLE_SPAWN_ATTEMPTS_MULTIPLIER = 4;
+const int MobSpawner::MIN_SPAWN_DISTANCE = 0;
+static const int CONSOLE_SPAWN_ATTEMPTS_MULTIPLIER = 8;
 
 TilePos MobSpawner::getRandomPosWithin(Level *level, int cx, int cz)
 {
