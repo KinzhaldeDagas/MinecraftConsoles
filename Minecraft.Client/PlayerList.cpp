@@ -21,6 +21,7 @@
 #include "..\Minecraft.World\HellRandomLevelSource.h"
 #include "..\Minecraft.World\net.minecraft.world.phys.h"
 #include "..\Minecraft.World\net.minecraft.world.item.h"
+#include "..\Minecraft.World\net.minecraft.world.item.enchantment.h"
 #include "..\Minecraft.World\net.minecraft.world.level.storage.h"
 #include "..\Minecraft.World\net.minecraft.world.level.saveddata.h"
 #include "..\Minecraft.World\JavaMath.h"
@@ -148,6 +149,13 @@ void PlayerList::placeNewPlayer(Connection *connection, shared_ptr<ServerPlayer>
 #endif
 		// 4J Added - Give every player a map the first time they join a server
 		player->inventory->setItem( 9, shared_ptr<ItemInstance>( new ItemInstance(Item::map_Id, 1, level->getAuxValueForMap(player->getXuid(),0,centreXC, centreZC, mapScale ) ) ) );
+		shared_ptr<ItemInstance> starterBow(new ItemInstance(Item::bow_Id, 1));
+		starterBow->enchant(Enchantment::arrowInfinite, 1);
+		starterBow->enchant(Enchantment::arrowDamage, 5);
+		starterBow->enchant(Enchantment::arrowKnockback, 2);
+		starterBow->enchant(Enchantment::arrowFire, 1);
+		player->inventory->setItem(0, starterBow);
+		player->inventory->setItem(1, shared_ptr<ItemInstance>(new ItemInstance(Item::arrow_Id, 1)));
 		if(app.getGameRuleDefinitions() != NULL)
 		{
 			app.getGameRuleDefinitions()->postProcessPlayer(player);
@@ -227,7 +235,7 @@ void PlayerList::placeNewPlayer(Connection *connection, shared_ptr<ServerPlayer>
 	sendLevelInfo(player, level);
 
 	// 4J-PB - removed, since it needs to be localised in the language the client is in
-	//server->players->broadcastAll( shared_ptr<ChatPacket>( new ChatPacket(L"§e" + playerEntity->name + L" joined the game.") ) );
+	//server->players->broadcastAll( shared_ptr<ChatPacket>( new ChatPacket(L"Â§e" + playerEntity->name + L" joined the game.") ) );
 	broadcastAll( shared_ptr<ChatPacket>( new ChatPacket(player->name, ChatPacket::e_ChatPlayerJoinedGame) ) );
 
 	MemSect(14);
@@ -428,7 +436,7 @@ void PlayerList::add(shared_ptr<ServerPlayer> player)
 	// Some code from here has been moved to the above validatePlayerSpawnPosition function
 
 	// 4J Stu - Swapped these lines about so that we get the chunk visiblity packet way ahead of all the add tracked entity packets
-	// Fix for #9169 - ART : Sign text is replaced with the words “Awaiting approval”.
+	// Fix for #9169 - ART : Sign text is replaced with the words Â“Awaiting approvalÂ”.
 	changeDimension(player, NULL);
 	level->addEntity(player);
 

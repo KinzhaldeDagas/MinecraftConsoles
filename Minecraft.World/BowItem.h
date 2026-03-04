@@ -9,7 +9,7 @@ class BowItem : public Item
 {
 public:
 	static const wstring TEXTURE_PULL[];
-	static const int MAX_DRAW_DURATION = 20 * 1;
+	static const int MAX_DRAW_DURATION = 1;
 
 private:
 	static const int BOW_ICONS_COUNT = 3;
