@@ -257,7 +257,8 @@ void Player::updateFrameTick()
 			{
 				if (!level->isClientSide)
 				{
-					useItem->releaseUsing(level, dynamic_pointer_cast<Player>(shared_from_this()), useItemDuration);
+					// Fire fully-drawn arrows while the use button is held to create rapid-fire bow behavior.
+					useItem->releaseUsing(level, dynamic_pointer_cast<Player>(shared_from_this()), 0);
 				}
 				useItemDuration = useItem->getUseDuration();
 			}

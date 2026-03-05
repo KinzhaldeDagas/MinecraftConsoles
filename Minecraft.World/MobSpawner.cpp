@@ -19,7 +19,7 @@
 #include "Dimension.h"
 
 const int MobSpawner::MIN_SPAWN_DISTANCE = 0;
-static const int CONSOLE_SPAWN_ATTEMPTS_MULTIPLIER = 8;
+static const int CONSOLE_SPAWN_ATTEMPTS_MULTIPLIER = 16;
 
 TilePos MobSpawner::getRandomPosWithin(Level *level, int cx, int cz)
 {
@@ -136,13 +136,13 @@ const int MobSpawner::tick(ServerLevel *level, bool spawnEnemies, bool spawnFrie
 #endif
 	}
 
-	for( int r = 1; r <= 8; r++ )
+	for( int r = 1; r <= 4; r++ )
 	{
 		for( int l = 0; l < ( r * 2 ) ; l++ )
 		{
 			for( int i = 0; i < playerCount; i++ )
 			{
-				bool edgeChunk = ( r == 8 );
+				bool edgeChunk = ( r == 4 );
 
 				// If this chunk isn't at the edge of the region for this player, then always store with a flag of false
 				// so that if it was at the edge of another player, then this will remove that

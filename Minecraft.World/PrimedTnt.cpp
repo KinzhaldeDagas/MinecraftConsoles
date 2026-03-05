@@ -9,6 +9,7 @@
 void PrimedTnt::_init()
 {
 	life = 0;
+	explodeOnImpact = false;
 
 	// Original Java Ctor
 	blocksBuilding = true;
@@ -78,6 +79,22 @@ void PrimedTnt::tick()
 		xd *= 0.7f;
 		zd *= 0.7f;
 		yd *= -0.5f;
+	}
+
+	if (explodeOnImpact)
+	{
+		int xt = Mth::floor(x);
+		int yt = Mth::floor(y);
+		int zt = Mth::floor(z);
+		if (onGround || horizontalCollision || level->isSolidBlockingTile(xt, yt, zt))
+		{
+			remove();
+			if (!level->isClientSide)
+			{
+				explode();
+			}
+			return;
+		}
 	}
 
 	if (life-- <= 0)
