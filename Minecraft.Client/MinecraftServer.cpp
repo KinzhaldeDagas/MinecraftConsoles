@@ -33,6 +33,8 @@
 #include "..\Minecraft.World\ConsoleSaveFileOriginal.h"
 #include "..\Minecraft.World\Socket.h"
 #include "..\Minecraft.World\net.minecraft.world.entity.h"
+#include "..\Minecraft.World\EnderDragon.h"
+#include "..\Minecraft.World\PrimedTnt.h"
 #include "ProgressRenderer.h"
 #include "ServerPlayer.h"
 #include "GameRenderer.h"
@@ -1588,6 +1590,15 @@ void MinecraftServer::broadcastStopSavingPacket()
 
 void MinecraftServer::tick()
 {
+	static const int DRAGON_EVENT_COOLDOWN_TICKS = 20 * 60 * SharedConstants::TICKS_PER_SECOND;
+	static const int DRAGON_EVENT_TOTAL_TICKS = 20 * 60 * SharedConstants::TICKS_PER_SECOND;
+	static const int DRAGON_ATTACK_PHASE_TICKS = 5 * 60 * SharedConstants::TICKS_PER_SECOND;
+	static const int DRAGON_CYCLE_TICKS = 10 * 60 * SharedConstants::TICKS_PER_SECOND;
+
+	static bool s_dragonEventActive = false;
+	static int s_dragonEventTicksRemaining = 0;
+	static int s_nextDragonEventRollTick = DRAGON_EVENT_COOLDOWN_TICKS;
+	static weak_ptr<EnderDragon> s_eventDragon;
 	vector<wstring> toRemove;
 	for (AUTO_VAR(it, ironTimers.begin()); it != ironTimers.end(); it++ )
 	{
@@ -1625,6 +1636,96 @@ void MinecraftServer::tick()
 		//        if (i == 0 || settings->getBoolean(L"allow-nether", true))		// 4J removed - we always have nether
 		{
 			ServerLevel *level = levels[i];
+
+			if (level != NULL && level->dimension != NULL && level->dimension->id == 0)
+			{
+				shared_ptr<ServerPlayer> targetPlayer = nullptr;
+				AUTO_VAR(itEndPlayers, players->players.end());
+				for (AUTO_VAR(itPlayer, players->players.begin()); itPlayer != itEndPlayers; itPlayer++)
+				{
+					if ((*itPlayer) != NULL && (*itPlayer)->level == level)
+					{
+						targetPlayer = *itPlayer;
+						break;
+					}
+				}
+
+				if (!s_dragonEventActive)
+				{
+					if (tickCount >= s_nextDragonEventRollTick && level->isDay() && targetPlayer != NULL)
+					{
+						if (level->random->nextInt(2) == 0)
+						{
+							shared_ptr<EnderDragon> dragon = shared_ptr<EnderDragon>(new EnderDragon(level));
+							dragon->moveTo(targetPlayer->x + 24.0f, targetPlayer->y + 20.0f, targetPlayer->z, 0, 0);
+							dragon->xTarget = targetPlayer->x;
+							dragon->yTarget = targetPlayer->y + 10.0f;
+							dragon->zTarget = targetPlayer->z;
+							level->addEntity(dragon);
+							s_eventDragon = dragon;
+							s_dragonEventActive = true;
+							s_dragonEventTicksRemaining = DRAGON_EVENT_TOTAL_TICKS;
+						}
+						s_nextDragonEventRollTick = tickCount + DRAGON_EVENT_COOLDOWN_TICKS;
+					}
+				}
+				else
+				{
+					shared_ptr<EnderDragon> dragon = s_eventDragon.lock();
+					if (dragon == NULL || dragon->removed)
+					{
+						if (targetPlayer != NULL)
+						{
+							dragon = shared_ptr<EnderDragon>(new EnderDragon(level));
+							dragon->moveTo(targetPlayer->x + 24.0f, targetPlayer->y + 20.0f, targetPlayer->z, 0, 0);
+							level->addEntity(dragon);
+							s_eventDragon = dragon;
+						}
+					}
+
+					if (targetPlayer != NULL && dragon != NULL)
+					{
+						int elapsed = DRAGON_EVENT_TOTAL_TICKS - s_dragonEventTicksRemaining;
+						bool attackPhase = (elapsed % DRAGON_CYCLE_TICKS) < DRAGON_ATTACK_PHASE_TICKS;
+						float angle = (float)elapsed * 0.03f;
+						float radius = attackPhase ? 24.0f : 72.0f;
+						double orbitX = targetPlayer->x + cos(angle) * radius;
+						double orbitZ = targetPlayer->z + sin(angle) * radius;
+						double orbitY = targetPlayer->y + (attackPhase ? 22.0f : 40.0f);
+
+						dragon->moveTo(orbitX, orbitY, orbitZ, 0, 0);
+						dragon->xTarget = targetPlayer->x;
+						dragon->yTarget = targetPlayer->y + 2.0f;
+						dragon->zTarget = targetPlayer->z;
+
+						if (attackPhase && (tickCount % 20 == 0))
+						{
+							shared_ptr<PrimedTnt> raidTnt = shared_ptr<PrimedTnt>(new PrimedTnt(level));
+							raidTnt->setPos(dragon->x, dragon->y - 2.0f, dragon->z);
+							Vec3 *toPlayer = Vec3::newPermanent(targetPlayer->x - dragon->x, (targetPlayer->y + 1.0f) - dragon->y, targetPlayer->z - dragon->z);
+							toPlayer->normalize();
+							raidTnt->xd = toPlayer->x * 1.2f;
+							raidTnt->yd = toPlayer->y * 1.2f;
+							raidTnt->zd = toPlayer->z * 1.2f;
+							raidTnt->life = 200;
+							raidTnt->explodeOnImpact = true;
+							level->addEntity(raidTnt);
+						}
+					}
+
+					if (--s_dragonEventTicksRemaining <= 0)
+					{
+						shared_ptr<EnderDragon> activeDragon = s_eventDragon.lock();
+						if (activeDragon != NULL)
+						{
+							activeDragon->remove();
+						}
+						s_eventDragon.reset();
+						s_dragonEventActive = false;
+						s_dragonEventTicksRemaining = 0;
+					}
+				}
+			}
 
 			// 4J Stu - We set the levels difficulty based on the minecraft options
 			level->difficulty = app.GetGameHostOption(eGameHostOption_Difficulty); //pMinecraft->options->difficulty;
