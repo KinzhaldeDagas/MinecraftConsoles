@@ -11,6 +11,7 @@ public:
 	static const int serialVersionUID = 0;
 
 	int life;
+	bool explodeOnImpact;
 	weak_ptr<LivingEntity> owner;
 
 	void _init();
