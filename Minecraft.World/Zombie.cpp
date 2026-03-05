@@ -117,37 +117,9 @@ void Zombie::setVillager(bool villager)
 
 void Zombie::aiStep()
 {
-	if (level->isDay() && !level->isClientSide && !isBaby())
-	{
-		float br = getBrightness(1);
-		if (br > 0.5f && level->canSeeSky(Mth::floor(x), (int) floor(y + 0.5), Mth::floor(z)))
-		{
-			bool burn = true;
-
-			shared_ptr<ItemInstance> helmet = getCarried(SLOT_HELM);
-			if (helmet != NULL)
-			{
-				if (helmet->isDamageableItem())
-				{
-					helmet->setAuxValue(helmet->getDamageValue() + random->nextInt(2));
-					if (helmet->getDamageValue() >= helmet->getMaxDamage())
-					{
-						breakItem(helmet);
-						setEquippedSlot(SLOT_HELM, nullptr);
-					}
-				}
-
-				burn = false;
-			}
-
-			if (burn)
-			{
-				setOnFire(8);
-			}
-		}
-	}
 	Monster::aiStep();
 }
+
 
 bool Zombie::hurt(DamageSource *source, float dmg)
 {
